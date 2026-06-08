@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediCall — A Doctor in Your Hotel Room, 24/7</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0a1628;
+      --navy-light: #12243f;
+      --teal: #0ea5e9;
+      --teal-dark: #0284c7;
+      --white: #ffffff;
+      --off-white: #f8fafc;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--white);
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--navy);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+    }
+
+    .nav-logo {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo span { color: var(--teal); }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-cta {
+      background: var(--teal);
+      color: var(--white) !important;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 600 !important;
+      transition: background 0.2s !important;
+    }
+
+    .nav-cta:hover { background: var(--teal-dark) !important; color: var(--white) !important; }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav-hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: all 0.3s;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      color: var(--white);
+      padding: 96px 24px 80px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(14,165,233,0.15);
+      border: 1px solid rgba(14,165,233,0.4);
+      color: var(--teal);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 99px;
+      margin-bottom: 24px;
+    }
+
+    #hero h1 {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      max-width: 700px;
+      margin: 0 auto 20px;
+    }
+
+    #hero h1 span { color: var(--teal); }
+
+    #hero p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: rgba(255,255,255,0.75);
+      max-width: 520px;
+      margin: 0 auto 40px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--teal);
+      color: var(--white);
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      display: inline-block;
+    }
+
+    .btn-primary:hover { background: var(--teal-dark); }
+    .btn-primary:active { transform: scale(0.97); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1.5px solid rgba(255,255,255,0.4);
+      transition: border-color 0.2s, background 0.2s;
+      display: inline-block;
+    }
+
+    .btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,0.07); }
+
+    .hero-trust {
+      margin-top: 52px;
+      display: flex;
+      justify-content: center;
+      gap: 36px;
+      flex-wrap: wrap;
+    }
+
+    .hero-trust-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.88rem;
+    }
+
+    .hero-trust-item svg { color: var(--teal); flex-shrink: 0; }
+
+    /* ── SHARED SECTION ── */
+    section { padding: 80px 24px; }
+
+    .section-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--navy);
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 540px;
+      margin-bottom: 52px;
+    }
+
+    /* ── SERVICES ── */
+    #services { background: var(--off-white); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 20px;
+    }
+
+    .service-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 28px 24px;
+      border: 1px solid var(--border);
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .service-card:hover {
+      box-shadow: 0 8px 32px rgba(14,165,233,0.1);
+      transform: translateY(-3px);
+    }
+
+    .service-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(14,165,233,0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: var(--teal);
+    }
+
+    .service-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .service-card p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ── HOW IT WORKS ── */
+    #how-it-works { background: var(--white); }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 32px;
+      position: relative;
+    }
+
+    .step {
+      text-align: center;
+      padding: 0 16px;
+    }
+
+    .step-number {
+      width: 56px;
+      height: 56px;
+      background: var(--teal);
+      color: var(--white);
+      border-radius: 50%;
+      font-size: 1.3rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .step h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+
+    .step p {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* ── BOOKING FORM ── */
+    #booking {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    #booking .section-title { color: var(--white); }
+    #booking .section-sub { color: rgba(255,255,255,0.65); }
+
+    .form-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 40px 36px;
+      max-width: 620px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.full { grid-column: 1 / -1; }
+
+    .form-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--off-white);
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--teal);
+      background: var(--white);
+    }
+
+    .form-group textarea { resize: vertical; min-height: 90px; }
+
+    .form-error {
+      font-size: 0.78rem;
+      color: #ef4444;
+      display: none;
+    }
+
+    .form-group.error input,
+    .form-group.error textarea,
+    .form-group.error select {
+      border-color: #ef4444;
+    }
+
+    .form-group.error .form-error { display: block; }
+
+    .form-submit {
+      margin-top: 24px;
+      width: 100%;
+      padding: 14px;
+      background: var(--teal);
+      color: var(--white);
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .form-submit:hover { background: var(--teal-dark); }
+    .form-submit:active { transform: scale(0.98); }
+
+    /* Confirmation */
+    .confirmation {
+      display: none;
+      background: var(--white);
+      border-radius: 20px;
+      padding: 48px 36px;
+      max-width: 620px;
+      text-align: center;
+    }
+
+    .confirmation.visible { display: block; }
+    .form-card.hidden { display: none; }
+
+    .confirmation-icon {
+      width: 64px;
+      height: 64px;
+      background: rgba(14,165,233,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      color: var(--teal);
+    }
+
+    .confirmation h3 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+
+    .confirmation p {
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .confirmation .ref {
+      display: inline-block;
+      background: rgba(14,165,233,0.1);
+      color: var(--teal);
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding: 8px 20px;
+      border-radius: 8px;
+      margin: 12px 0 24px;
+      letter-spacing: 0.05em;
+    }
+
+    .confirmation button {
+      background: none;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 24px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: var(--muted);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .confirmation button:hover { border-color: var(--teal); color: var(--teal); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy);
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      padding: 28px 24px;
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+    footer strong { color: rgba(255,255,255,0.8); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: var(--navy);
+        padding: 16px 24px 24px;
+        gap: 16px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      }
+      .nav-hamburger { display: flex; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-card, .confirmation { padding: 28px 20px; }
+      #hero { padding: 64px 20px 56px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Medi<span>Call</span></div>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#booking" class="nav-cta">Request a Doctor</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-badge">Available 24 hours · 7 days a week</div>
+    <h1>A Doctor in Your<br/><span>Hotel Room</span>, 24/7</h1>
+    <p>Feeling unwell while travelling? A qualified doctor or nurse comes to you — wherever you're staying.</p>
+    <div class="hero-actions">
+      <a href="#booking" class="btn-primary">Request a Doctor Now</a>
+      <a href="#how-it-works" class="btn-outline">How It Works</a>
+    </div>
+    <div class="hero-trust">
+      <div class="hero-trust-item">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor"/></svg>
+        Licensed medical professionals
+      </div>
+      <div class="hero-trust-item">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Average response under 45 min
+      </div>
+      <div class="hero-trust-item">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Discreet & confidential
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="section-inner">
+      <div class="section-label">What We Treat</div>
+      <h2 class="section-title">Medical care for every situation</h2>
+      <p class="section-sub">Our doctors and nurses handle a wide range of conditions — right in the comfort of your room.</p>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zm0 18a8 8 0 110-16 8 8 0 010 16zm-1-9h2v4h-2zm0-4h2v2h-2z" fill="currentColor"/></svg>
+          </div>
+          <h3>General Illness</h3>
+          <p>Fever, flu, sore throat, stomach problems, infections, and other common ailments.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" fill="currentColor"/></svg>
+          </div>
+          <h3>Injury & Wound Care</h3>
+          <p>Cuts, sprains, minor burns, and injuries that need prompt attention and dressing.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z" fill="currentColor"/></svg>
+          </div>
+          <h3>Prescription Refills</h3>
+          <p>Lost or ran out of your regular medication? We can assess and issue emergency prescriptions.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8zm-1-5h2v2h-2zm0-8h2v6h-2z" fill="currentColor"/></svg>
+          </div>
+          <h3>IV Drip & Rehydration</h3>
+          <p>Severe dehydration, food poisoning, or post-flight fatigue — fast recovery with IV therapy.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works">
+    <div class="section-inner">
+      <div class="section-label">The Process</div>
+      <h2 class="section-title">Simple, fast, stress-free</h2>
+      <p class="section-sub">Three steps from request to recovery.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Fill Out the Form</h3>
+          <p>Tell us your hotel, room number, and what you're experiencing. Takes under two minutes.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>We Call You Back</h3>
+          <p>A coordinator calls you within minutes to confirm your request and give you an arrival time.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Doctor Arrives</h3>
+          <p>A licensed doctor or nurse comes directly to your room — no travel, no waiting rooms.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKING FORM -->
+  <section id="booking">
+    <div class="section-inner">
+      <div class="section-label">Get Help Now</div>
+      <h2 class="section-title">Request a Doctor</h2>
+      <p class="section-sub">Fill in the form below and we'll call you back within minutes.</p>
+
+      <div class="form-card" id="form-card">
+        <form id="booking-form" novalidate>
+          <div class="form-grid">
+            <div class="form-group" id="fg-name">
+              <label for="name">Full Name *</label>
+              <input type="text" id="name" placeholder="e.g. Jane Smith" autocomplete="name" />
+              <span class="form-error">Please enter your name.</span>
+            </div>
+            <div class="form-group" id="fg-phone">
+              <label for="phone">Phone Number *</label>
+              <input type="tel" id="phone" placeholder="+1 555 000 0000" autocomplete="tel" />
+              <span class="form-error">Please enter a phone number.</span>
+            </div>
+            <div class="form-group" id="fg-hotel">
+              <label for="hotel">Hotel Name *</label>
+              <input type="text" id="hotel" placeholder="e.g. Grand Hyatt" />
+              <span class="form-error">Please enter your hotel name.</span>
+            </div>
+            <div class="form-group" id="fg-room">
+              <label for="room">Room Number *</label>
+              <input type="text" id="room" placeholder="e.g. 412" />
+              <span class="form-error">Please enter your room number.</span>
+            </div>
+            <div class="form-group full" id="fg-symptoms">
+              <label for="symptoms">Symptoms / Reason for Visit *</label>
+              <textarea id="symptoms" placeholder="Briefly describe what you're experiencing..."></textarea>
+              <span class="form-error">Please describe your symptoms.</span>
+            </div>
+            <div class="form-group full">
+              <label for="timing">When do you need the doctor?</label>
+              <select id="timing">
+                <option value="asap">As soon as possible</option>
+                <option value="1h">Within 1 hour</option>
+                <option value="2h">Within 2 hours</option>
+                <option value="tonight">Tonight</option>
+                <option value="tomorrow">Tomorrow morning</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="form-submit">Request a Doctor →</button>
+        </form>
+      </div>
+
+      <div class="confirmation" id="confirmation">
+        <div class="confirmation-icon">
+          <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Request Received!</h3>
+        <p>Your reference number is</p>
+        <div class="ref" id="ref-number"></div>
+        <p>We'll call you on the number provided within the next few minutes to confirm your appointment.</p>
+        <button id="new-request-btn">Submit another request</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <strong>MediCall</strong> — Professional medical care, wherever you stay.<br/>
+    &copy; <span id="footer-year"></span> MediCall. All rights reserved.
+  </footer>
+
+  <script>
+    // Footer year
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // Hamburger menu
+    document.getElementById('hamburger').addEventListener('click', () => {
+      document.getElementById('nav-links').classList.toggle('open');
+    });
+
+    // Close menu on link click
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        document.getElementById('nav-links').classList.remove('open');
+      });
+    });
+
+    // Booking form
+    const STORAGE_KEY = 'medicall_requests';
+
+    const loadRequests = () => {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
+    };
+
+    const validate = () => {
+      const fields = [
+        { id: 'name',     fg: 'fg-name' },
+        { id: 'phone',    fg: 'fg-phone' },
+        { id: 'hotel',    fg: 'fg-hotel' },
+        { id: 'room',     fg: 'fg-room' },
+        { id: 'symptoms', fg: 'fg-symptoms' },
+      ];
+      let valid = true;
+      fields.forEach(({ id, fg }) => {
+        const val = document.getElementById(id).value.trim();
+        const group = document.getElementById(fg);
+        if (!val) {
+          group.classList.add('error');
+          valid = false;
+        } else {
+          group.classList.remove('error');
+        }
+      });
+      return valid;
+    };
+
+    document.getElementById('booking-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!validate()) return;
+
+      const ref = 'MC-' + String(Date.now()).slice(-6);
+      const request = {
+        ref,
+        name:      document.getElementById('name').value.trim(),
+        phone:     document.getElementById('phone').value.trim(),
+        hotel:     document.getElementById('hotel').value.trim(),
+        room:      document.getElementById('room').value.trim(),
+        symptoms:  document.getElementById('symptoms').value.trim(),
+        timing:    document.getElementById('timing').value,
+        submittedAt: new Date().toISOString(),
+      };
+
+      const requests = loadRequests();
+      requests.push(request);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(requests));
+
+      document.getElementById('ref-number').textContent = ref;
+      document.getElementById('form-card').classList.add('hidden');
+      document.getElementById('confirmation').classList.add('visible');
+    });
+
+    // Clear errors on input
+    ['name','phone','hotel','room','symptoms'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        document.getElementById('fg-' + id)?.classList.remove('error');
+      });
+    });
+
+    document.getElementById('new-request-btn').addEventListener('click', () => {
+      document.getElementById('booking-form').reset();
+      document.getElementById('form-card').classList.remove('hidden');
+      document.getElementById('confirmation').classList.remove('visible');
+    });
+  </script>
+</body>
+</html>
