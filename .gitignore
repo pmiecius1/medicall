@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.user
+
+# Logs
+*.log
+
+# Local env / secrets
+.env
+.env.local
